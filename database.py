@@ -1,6 +1,8 @@
 import sqlite3
 from day import Day
 from status_work import Status
+from datetime import date
+
 
 class Database:
     """Represent a database."""
@@ -81,6 +83,22 @@ class Database:
         day = Day(day_id, date, status, start_work, end_work)
         return day
 
+    def rows_to_list(self,rows:list[tuple])->list[Day]:
+        """
+        Create a days list.
+
+        Args:
+            rows: A list of tuples.
+        
+        Returns:
+            A list of Day objects.
+        """
+        days = []
+        for row in rows:
+            day = self.row_to_day(row)
+            days.append(day)
+        return days
+
     def get_all_days(self) -> list[Day]:
         """
         Get and return all days.
@@ -91,12 +109,9 @@ class Database:
         self.cursor.execute("""
             SELECT day_id,date,status,start_work,end_work FROM days
         """)
-        days = []
         rows = self.cursor.fetchall()
-        for row in rows:
-            day = self.row_to_day(row)
-            days.append(day)
-        return days
+        return self.rows_to_list(rows)
+
 
     def find_day_by_id(self, day_id: int) -> Day | None:
         """
@@ -119,3 +134,36 @@ class Database:
         if not row:
             return None
         return self.row_to_day(row)
+
+    def get_days_between(self,start_day:str,end_day:str)->list[Day]:
+        """
+        Finding and return the days between two dates.
+
+        Args:
+            start_day: The start day date.
+            end_day: The end day date.
+
+        Raises:
+            ValueError: If the date format is not correct.
+            ValueError: If the start day is after end day.
+
+        Returns:
+            A list of days.
+        """
+        try:
+            date.fromisoformat(start_day)
+            date.fromisoformat(end_day)
+        except ValueError:
+            raise ValueError("The date format is not correct.")
+        
+        if start_day > end_day:
+            raise ValueError("The start day can not be after end day")
+        
+        self.cursor.execute("""
+        SELECT day_id,date,status,start_work,end_work FROM days WHERE date BETWEEN ? AND ?
+        """,
+        (start_day,end_day)
+        )
+        rows = self.cursor.fetchall()
+        return self.rows_to_list(rows)
+        
