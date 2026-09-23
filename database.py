@@ -1,6 +1,6 @@
 import sqlite3
 from day import Day
-
+from status_work import Status
 
 class Database:
     """Represent a database."""
@@ -16,6 +16,7 @@ class Database:
         self.file_name = file_name
         self.connection = sqlite3.connect(self.file_name)
         self.cursor = self.connection.cursor()
+        self.create_tables()
 
     def close(self) -> None:
         """
@@ -73,7 +74,7 @@ class Database:
         """
         day_id = row[0]
         date = row[1]
-        status = row[2]
+        status = Status(row[2])
         start_work = row[3]
         end_work = row[4]
 
