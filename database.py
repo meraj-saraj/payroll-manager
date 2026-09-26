@@ -38,6 +38,14 @@ class Database:
             end_work TEXT
             )
         """)
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS rates(
+        rate_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        effective_date TEXT NOT NULL UNIQUE,
+        day_rate REAL NOT NULL,
+        overtime_rate REAL NOT NULL
+        )
+        """)
         self.connection.commit()
 
     def add_day(self, day: Day) -> bool:
@@ -166,4 +174,45 @@ class Database:
         )
         rows = self.cursor.fetchall()
         return self.rows_to_list(rows)
+
+    def add_rate(self,effective_date:str,day_rate: float,overtime_rate: float)-> bool:
+        """
+        Add a new rate entry.
+
+        Args:
+            effective_date: The date this rate become effective (ISO format).
+            day_rate: The daily rate.
+            overtime_rate: The overtime hourly rate.
+
+        Returns:
+            True if added; otherwise, False.
+        """
+        try:
+            self.cursor.execute("""
+            INSERT INTO rates(
+            effective_date, day_rate, overtime_rate)
+            VALUES (?,?,?)
+            """,
+            (effective_date, day_rate, overtime_rate),
+            )
+            self.connection.commit()
+            return True
+        except sqlite3.IntegrityError:
+            return False
+
+    def get_rate_for_date(self,date:str)-> tuple [float, float] | None:
+        """
         
+        """
+        self.cursor.execute("""
+        SELECT day_rate,overtime_rate FROM rates
+        WHERE effective_date <= ? 
+        ORDER BY  effective_date DESC
+        LIMIT 1
+        """,
+        (date,),
+        )
+        row = self.cursor.fetchone()
+        if not row:
+            return None
+        return row[0],row[1]
