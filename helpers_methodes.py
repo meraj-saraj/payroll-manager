@@ -1,4 +1,5 @@
 import jdatetime
+from datetime import datetime
 from day import Day
 from status_work import Status
 
@@ -70,3 +71,107 @@ def calculate_salary(days: list[Day], day_rate:float, overtime_rate: float)-> fl
     overtimes_rate = overtime_hours * overtime_rate 
 
     return days_rate + overtimes_rate
+
+def get_status_from_user():
+    """
+    Get status day from user.
+
+    Returns:
+        A Enum 'Status'
+    """
+    options ={
+        "1": Status.WORK,
+        "2": Status.FRIDAY,
+        "3": Status.HOLIDAY,
+        "4": Status.ABSENCE
+    }
+    while True:
+        choice = input("Select status_day:\n1.Work\n2.Friday\n3.Holiday\n4.Absence\n>>>")
+        if choice in options:
+            return options[choice]
+        else:
+            print("Enter a number between 1 and 4.")
+
+def get_valid_day_number()-> int:
+    """
+    Get and return a valid day number.
+
+    Returns:
+        A valid day number.
+    """
+    while True:
+        day = input("Enter day number: ")
+        try:
+            day = int(day)
+            if  1 <= day <= 31:
+                return day
+            print("Invalid day number.")
+        except ValueError :
+            print("The day number must be integer number.")
+
+def get_valid_month_number()->int:
+    """
+    Get and return a valid month number.
+
+    Returns:
+        A valid month number.
+    """
+    while True:
+        month = input("Enter month number: ")
+        try:
+            month = int(month)
+            if 1 <= month <= 12:
+                return month
+            print("The month number must be a number between 1 and 12.")
+        except ValueError:
+            print("The month number must be integer number.")
+
+def get_valid_year_number()-> int:
+    """
+    Get and return a valid year number.
+    """
+    while True:
+        year = input("Enter year number: ")
+        try:
+            year = int(year)
+            if 1000 <= year <= 9999:
+                return year
+            print("The year number must be a 4 digits number.")
+        except ValueError:
+            print("The year number must be integer number.") 
+
+
+def get_valid_date():
+    """
+    Get and return valid day date.
+
+    Returns:
+        A valid day date.
+    """
+    while True:
+        year = get_valid_year_number()
+        month = get_valid_month_number()
+        day = get_valid_day_number()
+        try:
+            jdatetime.date(year,month,day)
+            return f"{year}/{month}/{day}"
+        except ValueError:
+            print("Invalid date, try again.")
+
+def get_valid_time(prompt:str)->str:
+    """
+    Get and return a valid time string in HH:MM format.
+
+    Args:
+        prompt: The message shown to the user.
+
+    Returns:
+        A valid time string.
+    """
+    while True:
+        time_str = input(prompt)
+        try:
+            datetime.strptime(time_str, "%H:%M")
+            return time_str
+        except ValueError:
+            print("Invalid time format. Use HH:MM")
