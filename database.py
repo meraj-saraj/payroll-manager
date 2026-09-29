@@ -216,3 +216,21 @@ class Database:
         if not row:
             return None
         return row[0],row[1]
+
+    def delete_day_by_date(self,date:str)->bool:
+        """
+        Find and delete a day by date.
+
+        Args:
+            date: The day date.
+
+        Returns:
+            True if day was deledted; otherwise, False.
+        """
+        self.cursor.execute("""
+        DELETE FROM days WHERE date = ?
+        """,(date,))
+        self.connection.commit()
+
+        rowcount = self.cursor.rowcount
+        return rowcount > 0

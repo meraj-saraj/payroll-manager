@@ -1,4 +1,4 @@
-from helpers_methodes import *
+from helper_methodes import *
 
 def create_day_from_user()->Day:
     """
