@@ -141,7 +141,7 @@ def get_valid_year_number()-> int:
             print("The year number must be integer number.") 
 
 
-def get_valid_date():
+def get_valid_date()->str:
     """
     Get and return valid day date.
 
@@ -171,7 +171,28 @@ def get_valid_time(prompt:str)->str:
     while True:
         time_str = input(prompt)
         try:
-            datetime.strptime(time_str, "%H:%M")
-            return time_str
+            time_format_str=datetime.strptime(time_str, "%H:%M")
+            return time_format_str.strftime("%H:%M")
         except ValueError:
             print("Invalid time format. Use HH:MM")
+
+def get_valid_positive_number(field_name:str)->float:
+    """
+    Get and return a valid positive number.
+
+    Args:
+        field_name: The field name.
+
+    Returns:
+        A valid positive number.
+    """
+    while True:
+        number = input(f"Enter {field_name}: ")
+        try:
+            number = float(number)
+            if 0 < number:
+                return number
+            print(f"THe {field_name} must be a positive number.")
+        except ValueError:
+            print(f"The {field_name} must be number.")
+
