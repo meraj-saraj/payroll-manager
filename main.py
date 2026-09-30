@@ -34,7 +34,8 @@ def main():
         print("1.Add a new day")
         print("2.Calculate salary for a month")
         print("3.Set / Update rate")
-        print("4.Exit")
+        print("4.Delete a day")
+        print("5.Exit")
         choice = input(">>> ")
         if choice == "1":
             day = create_day_from_user()
@@ -70,6 +71,15 @@ def main():
                 print("Error: this date already has a rate.")
 
         elif choice == "4":
+            jalali_date = get_valid_date()
+            date = jalali_to_iso(jalali_date)
+            is_deleted = db.delete_day_by_date(date)
+            if is_deleted:
+                print("Delete successfully.")
+            else:
+                print("The day not found.")
+
+        elif choice == "5":
             print("Exit...")
             break
 

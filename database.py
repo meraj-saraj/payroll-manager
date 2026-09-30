@@ -234,3 +234,23 @@ class Database:
 
         rowcount = self.cursor.rowcount
         return rowcount > 0
+
+    def update_day(self,date:str, status:Status, start_work:str |None, end_work:str |None)->bool:
+        """
+        Update the status and work hours of an existing day.
+
+        Args:
+            date: The day date.
+            status: The new status_work day.
+            start_work: The new start_work time.
+            end_work: The new end_work time.
+
+        Returns:
+            True if day was updated; otherwise, False.
+        """
+        self.cursor.execute("""
+        UPDATE days SET  status = ? , start_work = ? , end_work = ? WHERE date = ?
+        """,
+        (status,start_work,end_work,date))
+        self.connection.commit()
+        return self.cursor.rowcount > 0
