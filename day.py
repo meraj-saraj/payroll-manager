@@ -35,4 +35,19 @@ class Day:
                 raise ValueError("The start_work is after end_work.")
         return 0.0
 
-    
+    def __str__ (self):
+        """
+        Return a human_readabale representation of the day.
+
+        Returns:
+            A formatted string.
+        """
+        lines = [f"Date: {self.date}",f"Status: {self.status}", f"Status: {self.status.value}"]
+        if self.status == Status.WORK:
+            lines.append(f"Start: {self.start_work}")
+            lines.append(f"End: {self.end_work}")
+            lines.append(f"Worked hours: {self.worked_hours()}")
+        return "\n".join(lines)
+
+day = Day(None,"2026-11-03",Status.WORK,"08:00","17:00")
+print(day)
