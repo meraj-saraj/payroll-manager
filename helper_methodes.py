@@ -2,6 +2,7 @@ import jdatetime
 from datetime import datetime
 from day import Day
 from status_work import Status
+STANDARD_HOURS= 9
 
 def jalali_to_iso(jalali: str) -> str:
     """
@@ -44,7 +45,7 @@ def jalali_month_range(year: int, month: int) -> tuple[str, str]:
     end_iso = end.togregorian().isoformat()
     return start_iso, end_iso
 
-def calculate_salary(days: list[Day], day_rate:float, overtime_rate: float)-> float:
+def calculate_salary(days: list[Day], day_rate:float, overtime_rate: float, standard_hours = STANDARD_HOURS)-> float:
     """
     Calculating salary for a specific range of days.
 
@@ -52,6 +53,7 @@ def calculate_salary(days: list[Day], day_rate:float, overtime_rate: float)-> fl
         days: A list of the Day object.
         day_rate: One-day rate.
         overtime_rate: One-hour overtime rate.
+        standard_hours: Standard working hours per day. Defaults to STANDARD_HOURS.
 
     Returns:
         A float number. 
@@ -62,8 +64,8 @@ def calculate_salary(days: list[Day], day_rate:float, overtime_rate: float)-> fl
         if day.status == Status.WORK:
             day_work_nums += 1
             work_hours = day.worked_hours()
-            if work_hours > 9:
-                day_overtime_hours = work_hours - 9
+            if work_hours > standard_hours:
+                day_overtime_hours = work_hours - standard_hours
                 overtime_hours += day_overtime_hours
 
 
@@ -196,3 +198,24 @@ def get_valid_positive_number(field_name:str)->float:
         except ValueError:
             print(f"The {field_name} must be number.")
 
+def get_status_and_times()->tuple[Status,str,str]:
+    """
+    Get and return day status.
+
+    Returns:
+        A tuple.
+    """
+    status = get_status_from_user()
+    if status == Status.WORK:
+        while True:
+            start_work = get_valid_time("Enter start_work time: ")
+            end_work = get_valid_time("Enter end_work time: ")
+            if start_work < end_work:
+                status_day = status,start_work,end_work
+                break
+            else:
+               print("Start_work must be less than end_work.")
+    else:
+        status_day = status,None,None
+    return status_day
+    

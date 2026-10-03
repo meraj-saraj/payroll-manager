@@ -1,6 +1,6 @@
 from helper_methodes import *
 from database import Database
-from helper_methodes import *
+
 
 def create_day_from_user()->Day:
     """
@@ -11,19 +11,8 @@ def create_day_from_user()->Day:
     """
     jalali_date = get_valid_date()
     date = jalali_to_iso(jalali_date)
-    status = get_status_from_user()
+    status,start_work,end_work = get_status_and_times()
 
-    if status == Status.WORK:
-        while True:
-            start_work = get_valid_time("Enter start_work time: ")
-            end_work = get_valid_time("Enter end_work time: ")
-            if start_work < end_work:
-                break
-            else:
-                print("Start_work must be less than end_work.")
-    else:
-        start_work = None
-        end_work = None
     return Day(None,date,status,start_work,end_work)
 
 
@@ -35,7 +24,8 @@ def main():
         print("2.Calculate salary for a month")
         print("3.Set / Update rate")
         print("4.Delete a day")
-        print("5.Exit")
+        print("5.Edit a day")
+        print("6.Exit")
         choice = input(">>> ")
         if choice == "1":
             day = create_day_from_user()
@@ -80,6 +70,15 @@ def main():
                 print("The day not found.")
 
         elif choice == "5":
+            jalali_date = get_valid_date()
+            date = jalali_to_iso(jalali_date)
+            status,start_work,end_work = get_status_and_times()
+            is_updated = db.update_day(date,status,start_work,end_work)
+            if is_updated:
+                print("Day updated.")
+            else:
+                print("No day found with that date.")
+        elif choice == "6":
             print("Exit...")
             break
 
