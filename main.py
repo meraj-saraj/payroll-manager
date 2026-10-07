@@ -25,7 +25,10 @@ def main():
         print("3.Set / Update rate")
         print("4.Delete a day")
         print("5.Edit a day")
-        print("6.Exit")
+        print("6.Show a day by date")
+        print("7.Show days of a month")
+        print("8.Show absence days of a month")
+        print("9.Exit")
         choice = input(">>> ")
         if choice == "1":
             day = create_day_from_user()
@@ -78,7 +81,38 @@ def main():
                 print("Day updated.")
             else:
                 print("No day found with that date.")
+
         elif choice == "6":
+            jalali_date = get_valid_date()
+            date = jalali_to_iso(jalali_date)
+            days = db.get_days_between(date, date)
+            if days:
+                print(days[0])
+            else:
+                print("No day found with that date.")
+
+        elif choice == "7":
+            year = get_valid_year_number()
+            month = get_valid_month_number()
+            start, end = jalali_month_range(year, month)
+            days = db.get_days_between(start, end)
+            if not days:
+                print("No days found in this range.")
+            else:
+                show_days(days)
+
+        elif choice == "8":
+            year = get_valid_year_number()
+            month = get_valid_month_number()
+            start, end = jalali_month_range(year, month)
+            days = db.get_days_between(start, end)
+            absences = [day for day in days if day.status == Status.ABSENCE]
+            if not absences:
+                print("No absences found in this range.")
+            else:
+                show_days(absences)
+                
+        elif choice == "9":
             print("Exit...")
             break
 

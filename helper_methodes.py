@@ -218,4 +218,13 @@ def get_status_and_times()->tuple[Status,str,str]:
     else:
         status_day = status,None,None
     return status_day
-    
+
+def show_days(days:list[Day])->None:
+    """
+    Displaying days of list.
+
+    Args:
+        days: A days list.
+    """
+    for day in days:
+        print(day)

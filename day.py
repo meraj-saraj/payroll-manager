@@ -42,12 +42,10 @@ class Day:
         Returns:
             A formatted string.
         """
-        lines = [f"Date: {self.date}",f"Status: {self.status}", f"Status: {self.status.value}"]
+        lines = [f"Date: {self.date}",f"Status: {self.status}", f"Status: {self.status.value}", f"{'*******'}"]
         if self.status == Status.WORK:
             lines.append(f"Start: {self.start_work}")
             lines.append(f"End: {self.end_work}")
             lines.append(f"Worked hours: {self.worked_hours()}")
         return "\n".join(lines)
 
-day = Day(None,"2026-11-03",Status.WORK,"08:00","17:00")
-print(day)
