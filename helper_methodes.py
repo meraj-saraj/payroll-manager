@@ -45,34 +45,31 @@ def jalali_month_range(year: int, month: int) -> tuple[str, str]:
     end_iso = end.togregorian().isoformat()
     return start_iso, end_iso
 
-def calculate_salary(days: list[Day], day_rate:float, overtime_rate: float, standard_hours = STANDARD_HOURS)-> float:
+def get_date_input()->str:
     """
-    Calculating salary for a specific range of days.
+    Get jalali date from user and convert to Gregorian ISO.
 
-    Args:   
-        days: A list of the Day object.
-        day_rate: One-day rate.
-        overtime_rate: One-hour overtime rate.
-        standard_hours: Standard working hours per day. Defaults to STANDARD_HOURS.
+    Returns:  
+        A Gregorian ISO date string.
+    """
+    jalali_date = get_valid_date()
+    date = jalali_to_iso(jalali_date)
+    return date
+
+def get_month_range_input()-> tuple[str,str]:
+    """
+    Get a jalali year and month from user and return  the Gregorian range.
 
     Returns:
-        A float number. 
+        A tuple (start_iso,end_iso)
     """
-    day_work_nums = 0
-    overtime_hours = 0
-    for day in days:
-        if day.status == Status.WORK:
-            day_work_nums += 1
-            work_hours = day.worked_hours()
-            if work_hours > standard_hours:
-                day_overtime_hours = work_hours - standard_hours
-                overtime_hours += day_overtime_hours
+    year = get_valid_year_number()
+    month = get_valid_month_number()
+    start ,end = jalali_month_range(year, month)
+    return start, end
 
 
-    days_rate = day_work_nums * day_rate
-    overtimes_rate = overtime_hours * overtime_rate 
 
-    return days_rate + overtimes_rate
 
 def get_status_from_user():
     """
@@ -228,3 +225,60 @@ def show_days(days:list[Day])->None:
     """
     for day in days:
         print(day)
+
+
+def generate_report(days: list[Day],standard_hours: float = STANDARD_HOURS)->dict:
+    """
+    Generate a summary report for a list of days.
+
+    Args:
+        days: A list of Day objects to summarieze.
+
+    Returns:
+        A dictionary with the report statistics.
+    """
+    report={
+        "work_days":0,
+        "friday_days":0,
+        "holiday_days":0,
+        "absence_days":0,
+        "total_hours":0,
+        "overtime_hours":0
+    }
+    for day in days:
+        if day.status == Status.FRIDAY:
+            report["friday_days"] +=1
+        elif day.status == Status.HOLIDAY:
+            report["holiday_days"] += 1
+        elif day.status == Status.ABSENCE:
+            report["absence_days"] += 1
+        else:
+            report["work_days"] += 1
+            try:
+                work_hours = day.worked_hours()
+                report["total_hours"] += work_hours
+                if work_hours > standard_hours:
+                    report["overtime_hours"] += work_hours - standard_hours
+            except ValueError:
+                continue
+    return report
+
+def calculate_salary(days: list[Day], day_rate:float, overtime_rate: float, standard_hours = STANDARD_HOURS)-> float:
+    """
+    Calculating salary for a specific range of days.
+
+    Args:   
+        days: A list of the Day object.
+        day_rate: One-day rate.
+        overtime_rate: One-hour overtime rate.
+        standard_hours: Standard working hours per day. Defaults to STANDARD_HOURS.
+
+    Returns:
+        A float number. 
+    """
+
+    report = generate_report(days,standard_hours)
+    days_rate = report["work_days"] * day_rate
+    overtimes_rate = report["overtime_hours"] * overtime_rate 
+
+    return days_rate + overtimes_rate

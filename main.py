@@ -40,9 +40,7 @@ def main():
             
 
         elif choice == "2":
-            year = get_valid_year_number()
-            month = get_valid_month_number()
-            start , end = jalali_month_range(year, month)
+            start, end = get_month_range_input()
             days = db.get_days_between(start,end)
             rate = db.get_rate_for_date(start)
             if rate is None : 
@@ -53,8 +51,7 @@ def main():
                 print(f"Salary : {salary}")
 
         elif choice == "3":
-            jalali_date = get_valid_date()
-            effective_date = jalali_to_iso(jalali_date)
+            effective_date = get_date_input()
             day_rate = get_valid_positive_number("day_rate")
             overtime_rate = get_valid_positive_number("overtime_rate")
             is_added = db.add_rate(effective_date,day_rate,overtime_rate)
@@ -64,8 +61,7 @@ def main():
                 print("Error: this date already has a rate.")
 
         elif choice == "4":
-            jalali_date = get_valid_date()
-            date = jalali_to_iso(jalali_date)
+            date = get_date_input()
             is_deleted = db.delete_day_by_date(date)
             if is_deleted:
                 print("Delete successfully.")
@@ -73,8 +69,7 @@ def main():
                 print("The day not found.")
 
         elif choice == "5":
-            jalali_date = get_valid_date()
-            date = jalali_to_iso(jalali_date)
+            date = get_date_input()
             status,start_work,end_work = get_status_and_times()
             is_updated = db.update_day(date,status,start_work,end_work)
             if is_updated:
@@ -83,8 +78,7 @@ def main():
                 print("No day found with that date.")
 
         elif choice == "6":
-            jalali_date = get_valid_date()
-            date = jalali_to_iso(jalali_date)
+            date = get_date_input()
             days = db.get_days_between(date, date)
             if days:
                 print(days[0])
@@ -92,9 +86,7 @@ def main():
                 print("No day found with that date.")
 
         elif choice == "7":
-            year = get_valid_year_number()
-            month = get_valid_month_number()
-            start, end = jalali_month_range(year, month)
+            start, end = get_month_range_input()
             days = db.get_days_between(start, end)
             if not days:
                 print("No days found in this range.")
@@ -102,9 +94,7 @@ def main():
                 show_days(days)
 
         elif choice == "8":
-            year = get_valid_year_number()
-            month = get_valid_month_number()
-            start, end = jalali_month_range(year, month)
+            start, end = get_month_range_input()
             days = db.get_days_between(start, end)
             absences = [day for day in days if day.status == Status.ABSENCE]
             if not absences:

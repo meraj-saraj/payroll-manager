@@ -42,7 +42,7 @@ class Day:
         Returns:
             A formatted string.
         """
-        lines = [f"Date: {self.date}",f"Status: {self.status}", f"Status: {self.status.value}", f"{'*******'}"]
+        lines = [f"Date: {self.date}", f"Status: {self.status.value}"]
         if self.status == Status.WORK:
             lines.append(f"Start: {self.start_work}")
             lines.append(f"End: {self.end_work}")
