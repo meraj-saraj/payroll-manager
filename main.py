@@ -28,7 +28,8 @@ def main():
         print("6.Show a day by date")
         print("7.Show days of a month")
         print("8.Show absence days of a month")
-        print("9.Exit")
+        print("9.Get report")
+        print("10.Exit")
         choice = input(">>> ")
         if choice == "1":
             day = create_day_from_user()
@@ -101,8 +102,30 @@ def main():
                 print("No absences found in this range.")
             else:
                 show_days(absences)
-                
+
         elif choice == "9":
+            print("Enter start date")
+            start = get_date_input()
+            print("Enter end date")
+            end = get_date_input()
+            try:
+                days = db.get_days_between(start,end)
+                report = generate_report(days)
+                print(f"Work days: {report['work_days']}")
+                print(f"Friday days: {report['friday_days']}")
+                print(f"Holiday days: {report['holiday_days']}")
+                print(f"Absence days: {report['absence_days']}")
+                print(f"Total hours: {report['total_hours']}")
+                print(f"Overtime hours: {report['overtime_hours']}")
+                rate = db.get_rate_for_date(start)
+                if rate is not None:
+                    day_rate, overtime_rate = rate
+                    salary = calculate_salary(days,day_rate,overtime_rate)
+                    print(f"Salary: {salary}")
+            except ValueError as e:
+                print(f"Error: {e}")
+                
+        elif choice == "10":
             print("Exit...")
             break
 
