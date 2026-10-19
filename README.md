@@ -21,7 +21,7 @@ Recording working and non-working days, and calculating overtime and wages.
 ## Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/meraj-saraj/payroll-manager.git
 cd Payroll-Manager
 pip install jdatetime pytest
 ```
