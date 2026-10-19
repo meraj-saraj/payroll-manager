@@ -1,4 +1,4 @@
 __pycache__/
-pyc
+*.pyc
+.pytest_cache/
 payroll.db
-test_day.py
